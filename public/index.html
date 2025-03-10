@@ -4,25 +4,36 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>HXP Call Transcription</title>
     <link rel="stylesheet" href="reset.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header>
-      <h1 class="header__title">Real-Time Transcription</h1>
-      <p class="header__sub-title">
-        Try AssemblyAI's new real-time transcription endpoint!
-      </p>
+      <img src="hxp-full-black.png" alt="HXP Logo" class="header__logo" />
     </header>
+
     <div class="real-time-interface">
       <p id="real-time-title" class="real-time-interface__title">
         Click start to begin recording!
       </p>
-      <p id="button" class="real-time-interface__button">Start</p>
+      <button id="button" class="real-time-interface__button">Start</button>
+      
       <p id="message" class="real-time-interface__message"></p>
+
+      <!-- Copy button (moved below the transcription) -->
+      <button id="copy-button" class="copy-button">Copy</button>
     </div>
+
     <script src="assemblyai.js"></script>
     <script src="index.js"></script>
+    <script>
+      document.getElementById("copy-button").addEventListener("click", function() {
+        const messageElement = document.getElementById("message");
+        if (messageElement.innerText.trim() !== "") {
+          navigator.clipboard.writeText(messageElement.innerText).catch(err => console.error("Failed to copy text:", err));
+        }
+      });
+    </script>
   </body>
 </html>

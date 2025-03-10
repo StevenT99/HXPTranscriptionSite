@@ -1,27 +1,24 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const { AssemblyAI } = require("assemblyai");
 
-const aai = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
 const app = express();
-app.use(express.static("public"));
-app.use(
-  "/assemblyai.js",
-  express.static(
-    path.join(__dirname, "node_modules/assemblyai/dist/assemblyai.umd.js"),
-  ),
-);
-app.use(express.json());
+const PORT = process.env.PORT || 8000;
 
-app.get("/token", async (_req, res) => {
-  const token = await aai.realtime.createTemporaryToken({ expires_in: 3600 });
-  res.json({ token });
+// Serve static frontend files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, "public")));
+
+// API route for token
+app.get("/token", (req, res) => {
+  res.json({ token: process.env.ASSEMBLYAI_API_KEY || "MISSING_API_KEY" });
 });
 
-app.set("port", 8000);
-const server = app.listen(app.get("port"), () => {
-  console.log(
-    `Server is running on port http://localhost:${server.address().port}`,
-  );
+// Serve index.html for any unknown route (SPA support)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is running on port http://localhost:${PORT}`);
 });
